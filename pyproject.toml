@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dian-invoice-pipeline"
+version = "0.1.0"
+description = "Consulta secuencial y validación de representaciones gráficas de facturas"
+requires-python = ">=3.11"
+dependencies = [
+    "playwright>=1.50,<2",
+    "pypdf[crypto]>=5,<7",
+]
+
+[project.scripts]
+dian-facturas = "dian_pipeline.cli:main"
+dian-escritorio = "dian_pipeline.desktop:main"
+dian-ocr = "dian_pipeline.ocr:main"
+dian-auditar = "dian_pipeline.audit:main"
+dian-conciliar = "dian_pipeline.reconcile:main"
+
+[project.optional-dependencies]
+escritorio = [
+    "pillow>=11,<13 ; sys_platform == 'win32'",
+    "pywinauto>=0.6.9,<0.7 ; sys_platform == 'win32'",
+]
+ocr = [
+    "pandas>=2.2,<4",
+    "pypdfium2>=4.30,<6",
+    "pytesseract>=0.3.13,<0.4",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1", "python-docx>=1.2,<2"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dian_pipeline"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
